@@ -34,12 +34,30 @@ describe('For the Steve Initialize File', function() {
       expect(this.readFileStub).to.have.been.calledWith(filePath);
     });
     describe('and it suceeds', function() {
+      beforeEach('Setup Assertion', function() {
+        callbackSpy = this.callbackSpy
+        this.expectResult = function(result) {
+          expect(callbackSpy.getCall(0).args[1]).to.eql(result);
+          return { to: { be: { ok: {}}}};
+        };
+      });
       beforeEach('Setup Spies', function() {
-        this.readFileStub.callsArgWith(1, null);
+        var readFileStub = this.readFileStub;
+        this.setFileContents = function(contents) {
+          readFileStub.callsArgWith(1, null, contents);
+        };
       });
       it('expect there to be no error', function() {
+        this.readFileStub.callsArgWith(1, null, '');
         this.file(_, this.callbackSpy);
         expect(this.callbackSpy).to.have.been.calledWith(null);
+      });
+      describe('expect it to return the correct values for', function() {
+        it('an empty file', function() {
+          this.setFileContents('');
+          this.file(_, this.callbackSpy);
+          this.expectResult([]).to.be.ok;
+        });
       });
     });
   });
