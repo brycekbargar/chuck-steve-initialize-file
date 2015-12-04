@@ -18,7 +18,13 @@ describe('For the Steve Initialize File', function() {
     this.file = proxyquire('./../index.js', proxyquireStubs);
   });
   describe('when loading the file', function() {
-    it('when fs errors expect an error', function() {
+    it('expect the file name to be passed', function() {
+      var filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
+      this.file(filePath, this.callbackSpy);
+      expect(this.readFileStub).to.have.been.calledOnce;
+      expect(this.readFileStub).to.have.been.calledWith(filePath);
+    });
+    it('and it fails expect an error', function() {
       var error = new Error();
       this.readFileStub.callsArgWith(1, error);
 
@@ -26,18 +32,11 @@ describe('For the Steve Initialize File', function() {
       expect(this.callbackSpy).to.have.been.calledOnce;
       expect(this.callbackSpy).to.have.been.calledWith(error);
     });
-    it('expect the file name to be passed', function() {
-      var filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
-      this.file(filePath, this.callbackSpy);
-      expect(this.readFileStub).to.have.been.calledOnce;
-      expect(this.readFileStub).to.have.been.calledWith(filePath);
-    });
     describe('and it suceeds', function() {
       beforeEach('Setup Assertion', function() {
         callbackSpy = this.callbackSpy
-        this.expectResults = function(result) {
-          expect(callbackSpy.getCall(0).args[1]).to.eql(result);
-          return { to: { be: { ok: {}}}};
+        this.results = function(result) {
+          return callbackSpy.getCall(0).args[1];
         };
       });
       beforeEach('Setup Spies', function() {
@@ -46,7 +45,7 @@ describe('For the Steve Initialize File', function() {
           readFileStub.callsArgWith(1, null, contents);
         };
       });
-      it('expect there to be no error', function() {
+      it('expect there to be no error assuming the file isn\'t terrible', function() {
         this.readFileStub.callsArgWith(1, null, '');
         this.file(_, this.callbackSpy);
         expect(this.callbackSpy).to.have.been.calledWith(null);
@@ -55,13 +54,13 @@ describe('For the Steve Initialize File', function() {
         it('an empty file', function() {
           this.setFileContents('');
           this.file(_, this.callbackSpy);
-          this.expectResults([]).to.be.ok;
+          expect(this.results()).to.eql([]);
         });
         it('a file with one entry', function() {
           var chuckFilePath = "aSuperCoolChucKFile.ck"
           this.setFileContents('Machine.add(me.dir()+"' + chuckFilePath + '");');
           this.file(_, this.callbackSpy);
-          this.expectResults([chuckFilePath]).to.be.ok;
+          expect(this.results()).to.eql([chuckFilePath]);
         });
       });
     });
