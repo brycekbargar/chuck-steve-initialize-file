@@ -1,5 +1,5 @@
-module.exports = function(_, cb){
-  require('fs').readFile('', function(err) {
+module.exports = function(filePath, cb){
+  require('fs').readFile(filePath, function(err) {
     cb(err);
   });
 };
