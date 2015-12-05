@@ -45,10 +45,6 @@ module.exports = function(filePath, cb){
     (contents || '')
       .split(/\n|;/)
       .forEach((thisLine) => {
-        if(thisLine === '') {
-          return;
-        }
-
         let singleLineCommentIndex = thisLine.indexOf('//');
         if(singleLineCommentIndex !== -1) {
           thisLine = thisLine.substring(0, singleLineCommentIndex);
@@ -58,8 +54,16 @@ module.exports = function(filePath, cb){
           thisLine,
           inBlock
         ));
-        thisLine = ctx.line;
+        thisLine = ctx.line.trim();
         inBlock = ctx.inBlock;
+
+        if(thisLine === '') {
+          return;
+        }
+
+        if(!thisLine.startsWith('Machine.add(')) {
+          cb(new Error('Only Machine.add() and comments are valid in Initialize.ck files!'));
+        }
 
         let filePathMatch = thisLine.match(/"(.*?\.ck)"/);
         if(filePathMatch) {

@@ -33,7 +33,7 @@ describe('For the Steve Initialize File', () => {
       expect(this.callbackSpy).to.have.been.calledOnce;
       expect(this.callbackSpy).to.have.been.calledWith(error);
     });
-    describe('and it suceeds', () => {
+    describe('and it succeeds', () => {
       beforeEach('Setup Assertion', () => {
         let callbackSpy = this.callbackSpy;
         this.results = () => {
@@ -53,6 +53,25 @@ describe('For the Steve Initialize File', () => {
         this.readFileStub.callsArgWith(1, null, '');
         this.file(_, this.callbackSpy);
         expect(this.callbackSpy).to.have.been.calledWith(null);
+      });
+      describe('expect an error if there are non `Machine.add()` statements', () => {
+        it('on their own line', () => {
+          this.setFileContents(`
+Machine.add(me.dir()+"aCoolFile.ck");
+0 ::second => now;
+Machine.add(me.dir()+"aCoolFile.ck");`
+          );
+          this.file(_, this.callbackSpy);
+          expect(this.error()).to.not.be.null;
+        });
+        it('on the same line', () => {
+          this.setFileContents(`
+Machine.add(me.dir()+"aCoolFile.ck"); 0 ::second => now;
+Machine.add(me.dir()+"aCoolFile.ck");`
+          );
+          this.file(_, this.callbackSpy);
+          expect(this.error()).to.not.be.null;
+        });
       });
       describe('expect correct values for', () => {
         it('a null file', () => {
