@@ -20,6 +20,8 @@ ecmaFeatures:
     - 2
   blockBindings:
     - 2
+  templateStrings:
+    - 2
 env:
   node: true
   mocha: true

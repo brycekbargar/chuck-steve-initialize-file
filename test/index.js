@@ -68,10 +68,10 @@ describe('For the Steve Initialize File', () => {
           expect(this.results()).to.eql([]);
         });
         it('a file with one entry', () => {
-          let chuckFilePath = 'aSuperCoolChucKFile.ck';
-          this.setFileContents('Machine.add(me.dir()+"' + chuckFilePath + '");');
+          let chuckFilePaths = ['aSuperCoolChucKFile.ck'];
+          this.setFileContents(`Machine.add(me.dir()+"${chuckFilePaths[0]}");`);
           this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql([chuckFilePath]);
+          expect(this.results()).to.eql(chuckFilePaths);
         });
         it('a file with various formats', () => {
           let chuckFilePaths = [
@@ -86,18 +86,18 @@ describe('For the Steve Initialize File', () => {
             '8aSuperCoolChucKFile.ck',
             '9aSuperCoolChucKFile.ck'
           ];
-          this.setFileContents([
-            'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
-            'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
-            'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
-            'Machine.add(me.dir() +"' + chuckFilePaths[3] + '");',
-            'Machine.add("' + chuckFilePaths[4] + '");',
-            'Machine.add(me.dir()+"' + chuckFilePaths[5] + '" );',
-            'Machine.add(me.dir()   +   "' + chuckFilePaths[6] + '" );',
-            'Machine.add(me.dir()+   "' + chuckFilePaths[7] + '" );',
-            'Machine.add(me.dir()   +"' + chuckFilePaths[8] + '" );',
-            'Machine.add("' + chuckFilePaths[9] + '" );'
-          ].join('\n'));
+          this.setFileContents(`
+Machine.add(me.dir()+"${chuckFilePaths[0]}");
+Machine.add(me.dir() + "${chuckFilePaths[1]}");
+Machine.add(me.dir()+ "${chuckFilePaths[2]}");
+Machine.add(me.dir() +"${chuckFilePaths[3]}");
+Machine.add("${chuckFilePaths[4]}");
+Machine.add(me.dir()+"${chuckFilePaths[5]}" );
+Machine.add(me.dir()   +   "${chuckFilePaths[6]}" );
+Machine.add(me.dir()+   "${chuckFilePaths[7]}" );
+Machine.add(me.dir()   +"${chuckFilePaths[8]}" );
+Machine.add("${chuckFilePaths[9]}" );`
+          );
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
@@ -107,21 +107,21 @@ describe('For the Steve Initialize File', () => {
             'anotherCoolFile.ck',
             'theLastCoolFile.ck'
           ];
-          this.setFileContents([
-            '// I\'m irrelevent!',
-            'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
-            '// Machine.add(me.dir() + "' + chuckFilePaths[0] + '");',
-            'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
-            '',
-            '// Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
-            '//Machine.add(me.dir() + "' + chuckFilePaths[2] + '");',
-            '',
-            '// I\'m probably lying!',
-            '//Machine.add(me.dir() + "' + chuckFilePaths[2] + '");',
-            '// I\'m definitely lying!!!',
-            'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
-            '//Why would you comment the last line in a file?'
-          ].join('\n'));
+          this.setFileContents(`
+// I\'m irrelevent!',
+Machine.add(me.dir()+"${chuckFilePaths[0]}");
+// Machine.add(me.dir() + "${chuckFilePaths[0]}");
+Machine.add(me.dir() + "${chuckFilePaths[1]}");
+
+// Machine.add(me.dir() + "${chuckFilePaths[1]}");
+//Machine.add(me.dir() + "${chuckFilePaths[2]}");
+
+// I\'m probably lying!
+//Machine.add(me.dir() + "${chuckFilePaths[2]}");
+// I\'m definitely lying!!!
+Machine.add(me.dir()+ "${chuckFilePaths[2]}");
+//Why would you comment the last line in a file?`
+          );
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
@@ -132,19 +132,19 @@ describe('For the Steve Initialize File', () => {
             'theLastCoolFile.ck'
           ];
           this.setFileContents([
-            '/* I\'m irrelevent!',
-            ' *',
-            ' * I\'m also irrelevent!*/',
-            'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
-            'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
-            '',
-            '',
-            '/*',
-            'I\'m probably lying!',
-            'I\'m definitely lying!!!',
-            '*/',
-            'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
-            '/*Why am I not a single line comment */'
+`/*I\'m irrelevent!
+  *
+  * I\'m also irrelevent!*/
+Machine.add(me.dir()+"${chuckFilePaths[0]}");
+Machine.add(me.dir() + "${chuckFilePaths[1]}");
+
+
+/*
+I\'m probably lying!
+I\'m definitely lying!!!
+*/
+Machine.add(me.dir()+ "${chuckFilePaths[2]}");
+/*Why am I not a single line comment */`
           ].join('\n'));
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
