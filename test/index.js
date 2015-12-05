@@ -72,7 +72,7 @@ describe('For the Steve Initialize File', function() {
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([chuckFilePath]);
         });
-        it('a file with multiple entries', function() {
+        it('a file with various formats', function() {
           var chuckFilePaths = [
             "0aSuperCoolChucKFile.ck",
             "1aSuperCoolChucKFile.ck",
@@ -92,15 +92,15 @@ describe('For the Steve Initialize File', function() {
             'Machine.add(me.dir() +"' + chuckFilePaths[3] + '");',
             'Machine.add("' + chuckFilePaths[4] + '");',
             'Machine.add(me.dir()+"' + chuckFilePaths[5] + '" );',
-            'Machine.add(me.dir() + "' + chuckFilePaths[6] + '" );',
-            'Machine.add(me.dir()+ "' + chuckFilePaths[7] + '" );',
-            'Machine.add(me.dir() +"' + chuckFilePaths[8] + '" );',
+            'Machine.add(me.dir()   +   "' + chuckFilePaths[6] + '" );',
+            'Machine.add(me.dir()+   "' + chuckFilePaths[7] + '" );',
+            'Machine.add(me.dir()   +"' + chuckFilePaths[8] + '" );',
             'Machine.add("' + chuckFilePaths[9] + '" );',
           ].join('\n'));
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
-        it('a file with single line comments', function() {
+        it('a file with single line comments and whitespace', function() {
           var chuckFilePaths = [
             "aCoolFile.ck",
             "anotherCoolFile.ck",
@@ -109,12 +109,13 @@ describe('For the Steve Initialize File', function() {
           this.setFileContents([
             '// I\'m irrelevent!',
             'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
-            '// Me too!!!',
             'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
+            '',
+            '',
             '// I\'m probably lying!',
             '// I\'m definitely lying!!!',
             'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
-            '// Why would you comment the last line in a file?'
+            '//Why would you comment the last line in a file?'
           ].join('\n'));
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
