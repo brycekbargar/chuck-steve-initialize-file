@@ -39,6 +39,9 @@ describe('For the Steve Initialize File', () => {
         this.results = () => {
           return callbackSpy.getCall(0).args[1];
         };
+        this.error = () => {
+          return callbackSpy.getCall(0).args[0];
+        };
       });
       beforeEach('Setup Spies', () => {
         let readFileStub = this.readFileStub;
@@ -51,7 +54,7 @@ describe('For the Steve Initialize File', () => {
         this.file(_, this.callbackSpy);
         expect(this.callbackSpy).to.have.been.calledWith(null);
       });
-      describe('expect it to return the correct values for', () => {
+      describe('expect correct values for', () => {
         it('a null file', () => {
           this.setFileContents(null);
           this.file(_, this.callbackSpy);
@@ -70,6 +73,15 @@ describe('For the Steve Initialize File', () => {
         it('a file with one entry', () => {
           let chuckFilePaths = ['aSuperCoolChucKFile.ck'];
           this.setFileContents(`Machine.add(me.dir()+"${chuckFilePaths[0]}");`);
+          this.file(_, this.callbackSpy);
+          expect(this.results()).to.eql(chuckFilePaths);
+        });
+        it('a file with multiple matches on one line', () => {
+          let chuckFilePaths = [
+            'aSuperCoolChucKFile.ck',
+            'theSecondChucKFile.ck'
+          ];
+          this.setFileContents(`Machine.add(me.dir()+"${chuckFilePaths[0]}"); Machine.add(me.dir()+"${chuckFilePaths[1]}"); `);
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
@@ -101,7 +113,7 @@ Machine.add("${chuckFilePaths[9]}" );`
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
-        it('a file with single line comments and whitespace', () => {
+        it('a file with single line comments', () => {
           let chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
@@ -129,7 +141,7 @@ Machine.add(me.dir()+ "${chuckFilePaths[4]}");
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
-        it('a file with multi-line comments and whitespace', () => {
+        it('a file with multi-line comments', () => {
           let chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',

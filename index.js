@@ -43,7 +43,7 @@ module.exports = function(filePath, cb){
     let filePaths = [];
     let inBlock = false;
     (contents || '')
-      .split('\n')
+      .split(/\n|;/)
       .forEach((thisLine) => {
         if(thisLine === '') {
           return;
@@ -61,7 +61,7 @@ module.exports = function(filePath, cb){
         thisLine = ctx.line;
         inBlock = ctx.inBlock;
 
-        let filePathMatch = thisLine.match(/"(.*\.ck)"/);
+        let filePathMatch = thisLine.match(/"(.*?\.ck)"/);
         if(filePathMatch) {
           filePaths.push(filePathMatch[1]);
         }
