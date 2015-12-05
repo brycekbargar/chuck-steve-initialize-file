@@ -19,15 +19,15 @@ describe('For the Steve Initialize File', () => {
     this.file = proxyquire('./../index.js', proxyquireStubs);
   });
   describe('when loading the file', () => {
-    it('expect the file name to be passed', () => {
+    it('expect the file name and encoding to be passed', () => {
       let filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
       this.file(filePath, this.callbackSpy);
       expect(this.readFileStub).to.have.been.calledOnce;
-      expect(this.readFileStub).to.have.been.calledWith(filePath);
+      expect(this.readFileStub).to.have.been.calledWith(filePath, 'utf-8');
     });
     it('and it fails expect an error', () => {
       let error = new Error();
-      this.readFileStub.callsArgWith(1, error);
+      this.readFileStub.callsArgWith(2, error);
 
       this.file(_, this.callbackSpy);
       expect(this.callbackSpy).to.have.been.calledOnce;
@@ -46,11 +46,11 @@ describe('For the Steve Initialize File', () => {
       beforeEach('Setup Spies', () => {
         let readFileStub = this.readFileStub;
         this.setFileContents = (contents) => {
-          readFileStub.callsArgWith(1, null, contents);
+          readFileStub.callsArgWith(2, null, contents);
         };
       });
       it('expect there to be no error assuming the file isn\'t terrible', () => {
-        this.readFileStub.callsArgWith(1, null, '');
+        this.setFileContents('');
         this.file(_, this.callbackSpy);
         expect(this.callbackSpy).to.have.been.calledWith(null);
       });

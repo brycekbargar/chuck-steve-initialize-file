@@ -33,7 +33,7 @@ const stripMultiLineComments = (ctx) => {
 };
 
 module.exports = function(filePath, cb){
-  require('fs').readFile(filePath, (err, contents) => {
+  require('fs').readFile(filePath, 'utf-8', (err, contents) => {
     if(err) {
       cb(err);
       return;
