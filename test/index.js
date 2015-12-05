@@ -51,8 +51,18 @@ describe('For the Steve Initialize File', function() {
         expect(this.callbackSpy).to.have.been.calledWith(null);
       });
       describe('expect it to return the correct values for', function() {
+        it('a null file', function() {
+          this.setFileContents(null);
+          this.file(_, this.callbackSpy);
+          expect(this.results()).to.eql([]);
+        });
         it('an empty file', function() {
           this.setFileContents('');
+          this.file(_, this.callbackSpy);
+          expect(this.results()).to.eql([]);
+        });
+        it('an file with only whitespace', function() {
+          this.setFileContents('  \n\n  ');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([]);
         });

@@ -7,7 +7,7 @@ module.exports = function(filePath, cb){
 
     // I tried using a lexer + parser but apparantly I'm not smart enough...
     var filePaths = [];
-    contents
+    (contents || '')
       .split('\n')
       .forEach(function(thisLine) {
         var filePathMatch = thisLine.match(/"(.*\.ck)"/);
