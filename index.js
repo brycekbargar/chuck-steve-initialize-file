@@ -4,12 +4,18 @@ module.exports = function(filePath, cb){
       cb(err);
       return;
     };
-    var filePaths = [];
 
-    var filePathMatches = contents.match(/^.*"(.*\.ck)"\);$/);
-    if(filePathMatches && filePathMatches.length > 1) {
-      filePaths[0] = filePathMatches[1];
-    }
+    // I tried using a lexer + parser but apparantly I'm not smart enough...
+    var filePaths = [];
+    contents
+      .split('\n')
+      .forEach(function(thisLine) {
+        var filePathMatch = thisLine.match(/"(.*\.ck)"/);
+        if(filePathMatch && filePathMatch.length > 1) {
+          filePaths.push(filePathMatch[1]);
+        }
+      });
+
     cb(null, filePaths);
   });
 };

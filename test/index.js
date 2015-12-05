@@ -4,7 +4,7 @@ var spy = sinon.spy;
 var stub = sinon.stub;
 var expect = require('chai').use(require('sinon-chai')).expect;
 
-var proxyquireStubs = {};
+var proxyquireStubs = { };
 
 var _ = '';
 
@@ -61,6 +61,34 @@ describe('For the Steve Initialize File', function() {
           this.setFileContents('Machine.add(me.dir()+"' + chuckFilePath + '");');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([chuckFilePath]);
+        });
+        it('a file with multiple entries', function() {
+          var chuckFilePaths = [
+            "0aSuperCoolChucKFile.ck",
+            "1aSuperCoolChucKFile.ck",
+            "2aSuperCoolChucKFile.ck",
+            "3aSuperCoolChucKFile.ck",
+            "4aSuperCoolChucKFile.ck",
+            "5aSuperCoolChucKFile.ck",
+            "6aSuperCoolChucKFile.ck",
+            "7aSuperCoolChucKFile.ck",
+            "8aSuperCoolChucKFile.ck",
+            "9aSuperCoolChucKFile.ck",
+          ];
+          this.setFileContents([
+            'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
+            'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
+            'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
+            'Machine.add(me.dir() +"' + chuckFilePaths[3] + '");',
+            'Machine.add("' + chuckFilePaths[4] + '");',
+            'Machine.add(me.dir()+"' + chuckFilePaths[5] + '" );',
+            'Machine.add(me.dir() + "' + chuckFilePaths[6] + '" );',
+            'Machine.add(me.dir()+ "' + chuckFilePaths[7] + '" );',
+            'Machine.add(me.dir() +"' + chuckFilePaths[8] + '" );',
+            'Machine.add("' + chuckFilePaths[9] + '" );',
+          ].join('\n'));
+          this.file(_, this.callbackSpy);
+          expect(this.results()).to.eql(chuckFilePaths);
         });
       });
     });
