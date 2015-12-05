@@ -109,10 +109,14 @@ describe('For the Steve Initialize File', function() {
           this.setFileContents([
             '// I\'m irrelevent!',
             'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
+            '// Machine.add(me.dir() + "' + chuckFilePaths[0] + '");',
             'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
             '',
+            '// Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
+            '//Machine.add(me.dir() + "' + chuckFilePaths[2] + '");',
             '',
             '// I\'m probably lying!',
+            '//Machine.add(me.dir() + "' + chuckFilePaths[2] + '");',
             '// I\'m definitely lying!!!',
             'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
             '//Why would you comment the last line in a file?'

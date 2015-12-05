@@ -10,6 +10,13 @@ module.exports = function(filePath, cb){
     (contents || '')
       .split('\n')
       .forEach(function(thisLine) {
+        if(thisLine === '') {
+          return;
+        }
+        if(thisLine.startsWith('//')) {
+          return;
+        }
+
         var filePathMatch = thisLine.match(/"(.*\.ck)"/);
         if(filePathMatch && filePathMatch.length > 1) {
           filePaths.push(filePathMatch[1]);
