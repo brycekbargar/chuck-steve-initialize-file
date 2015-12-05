@@ -120,6 +120,30 @@ describe('For the Steve Initialize File', function() {
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
+        it('a file with multi-line comments and whitespace', function() {
+          var chuckFilePaths = [
+            "aCoolFile.ck",
+            "anotherCoolFile.ck",
+            "theLastCoolFile.ck",
+          ];
+          this.setFileContents([
+            '/* I\'m irrelevent!',
+            ' *',
+            ' * I\'m also irrelevent!*/',
+            'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
+            'Machine.add(me.dir() + "' + chuckFilePaths[1] + '");',
+            '',
+            '',
+            '/*',
+            'I\'m probably lying!',
+            'I\'m definitely lying!!!',
+            '*/',
+            'Machine.add(me.dir()+ "' + chuckFilePaths[2] + '");',
+            '/*Why am I not a single line comment */'
+          ].join('\n'));
+          this.file(_, this.callbackSpy);
+          expect(this.results()).to.eql(chuckFilePaths);
+        });
       });
     });
   });
