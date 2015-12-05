@@ -1,4 +1,5 @@
 module.exports = function(filePath, cb){
+  'use strict';
   require('fs').readFile(filePath, (err, contents) => {
     if(err) {
       cb(err);
@@ -6,7 +7,7 @@ module.exports = function(filePath, cb){
     }
 
     // I tried using a lexer + parser but apparantly I'm not smart enough...
-    var filePaths = [];
+    let filePaths = [];
     (contents || '')
       .split('\n')
       .forEach((thisLine) => {
@@ -17,7 +18,7 @@ module.exports = function(filePath, cb){
           return;
         }
 
-        var filePathMatch = thisLine.match(/"(.*\.ck)"/);
+        let filePathMatch = thisLine.match(/"(.*\.ck)"/);
         if(filePathMatch && filePathMatch.length > 1) {
           filePaths.push(filePathMatch[1]);
         }

@@ -1,12 +1,13 @@
-var proxyquire = require('proxyquire').noCallThru();
-var sinon = require('sinon');
-var spy = sinon.spy;
-var stub = sinon.stub;
-var expect = require('chai').use(require('sinon-chai')).expect;
+'use strict';
+const proxyquire = require('proxyquire').noCallThru();
+const sinon = require('sinon');
+const spy = sinon.spy;
+const stub = sinon.stub;
+const expect = require('chai').use(require('sinon-chai')).expect;
 
-var proxyquireStubs = { };
+const proxyquireStubs = { };
 
-var _ = '';
+const _ = '';
 
 describe('For the Steve Initialize File', () => {
   beforeEach('Setup Spies', () => {
@@ -19,13 +20,13 @@ describe('For the Steve Initialize File', () => {
   });
   describe('when loading the file', () => {
     it('expect the file name to be passed', () => {
-      var filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
+      let filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
       this.file(filePath, this.callbackSpy);
       expect(this.readFileStub).to.have.been.calledOnce;
       expect(this.readFileStub).to.have.been.calledWith(filePath);
     });
     it('and it fails expect an error', () => {
-      var error = new Error();
+      let error = new Error();
       this.readFileStub.callsArgWith(1, error);
 
       this.file(_, this.callbackSpy);
@@ -34,13 +35,13 @@ describe('For the Steve Initialize File', () => {
     });
     describe('and it suceeds', () => {
       beforeEach('Setup Assertion', () => {
-        var callbackSpy = this.callbackSpy;
+        let callbackSpy = this.callbackSpy;
         this.results = () => {
           return callbackSpy.getCall(0).args[1];
         };
       });
       beforeEach('Setup Spies', () => {
-        var readFileStub = this.readFileStub;
+        let readFileStub = this.readFileStub;
         this.setFileContents = (contents) => {
           readFileStub.callsArgWith(1, null, contents);
         };
@@ -67,13 +68,13 @@ describe('For the Steve Initialize File', () => {
           expect(this.results()).to.eql([]);
         });
         it('a file with one entry', () => {
-          var chuckFilePath = 'aSuperCoolChucKFile.ck';
+          let chuckFilePath = 'aSuperCoolChucKFile.ck';
           this.setFileContents('Machine.add(me.dir()+"' + chuckFilePath + '");');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([chuckFilePath]);
         });
         it('a file with various formats', () => {
-          var chuckFilePaths = [
+          let chuckFilePaths = [
             '0aSuperCoolChucKFile.ck',
             '1aSuperCoolChucKFile.ck',
             '2aSuperCoolChucKFile.ck',
@@ -101,7 +102,7 @@ describe('For the Steve Initialize File', () => {
           expect(this.results()).to.eql(chuckFilePaths);
         });
         it('a file with single line comments and whitespace', () => {
-          var chuckFilePaths = [
+          let chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
             'theLastCoolFile.ck'
@@ -125,7 +126,7 @@ describe('For the Steve Initialize File', () => {
           expect(this.results()).to.eql(chuckFilePaths);
         });
         it('a file with multi-line comments and whitespace', () => {
-          var chuckFilePaths = [
+          let chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
             'theLastCoolFile.ck'

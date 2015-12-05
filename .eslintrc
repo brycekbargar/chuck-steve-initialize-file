@@ -11,10 +11,14 @@ rules:
   semi:
     - 2
     - always
+  no-var:
+    - 2
 ecmaFeatures:
   arrowFunctions:
     - 2
   modules:
+    - 2
+  blockBindings:
     - 2
 env:
   node: true
