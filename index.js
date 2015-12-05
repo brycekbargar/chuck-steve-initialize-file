@@ -14,8 +14,10 @@ module.exports = function(filePath, cb){
         if(thisLine === '') {
           return;
         }
-        if(thisLine.startsWith('//')) {
-          return;
+        
+        let singleLineCommentIndex = thisLine.indexOf('//');
+        if(singleLineCommentIndex !== -1) {
+          thisLine = thisLine.substring(0, singleLineCommentIndex);
         }
 
         let filePathMatch = thisLine.match(/"(.*\.ck)"/);

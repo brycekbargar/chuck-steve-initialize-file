@@ -105,6 +105,8 @@ Machine.add("${chuckFilePaths[9]}" );`
           let chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
+            'oneMoreCoolFile.ck',
+            'yetAnotherCoolFile.ck',
             'theLastCoolFile.ck'
           ];
           this.setFileContents(`
@@ -114,12 +116,14 @@ Machine.add(me.dir()+"${chuckFilePaths[0]}");
 Machine.add(me.dir() + "${chuckFilePaths[1]}");
 
 // Machine.add(me.dir() + "${chuckFilePaths[1]}");
-//Machine.add(me.dir() + "${chuckFilePaths[2]}");
+Machine.add(me.dir() + "${chuckFilePaths[2]}"); // This file is special or something
+Machine.add(me.dir() + "${chuckFilePaths[3]}"); // Machine.add(me.dir() + "${chuckFilePaths[3]}");
+//Machine.add(me.dir() + "${chuckFilePaths[3]}");
 
 // I\'m probably lying!
 //Machine.add(me.dir() + "${chuckFilePaths[2]}");
 // I\'m definitely lying!!!
-Machine.add(me.dir()+ "${chuckFilePaths[2]}");
+Machine.add(me.dir()+ "${chuckFilePaths[4]}");
 //Why would you comment the last line in a file?`
           );
           this.file(_, this.callbackSpy);
@@ -131,10 +135,10 @@ Machine.add(me.dir()+ "${chuckFilePaths[2]}");
             'anotherCoolFile.ck',
             'theLastCoolFile.ck'
           ];
-          this.setFileContents([
-`/*I\'m irrelevent!
-  *
-  * I\'m also irrelevent!*/
+          this.setFileContents([`
+/* I\'m irrelevent!
+ *
+ * I\'m also irrelevent!*/
 Machine.add(me.dir()+"${chuckFilePaths[0]}");
 Machine.add(me.dir() + "${chuckFilePaths[1]}");
 
