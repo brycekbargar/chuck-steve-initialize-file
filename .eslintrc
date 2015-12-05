@@ -14,6 +14,8 @@ rules:
 ecmaFeatures:
   arrowFunctions:
     - 2
+  modules:
+    - 2
 env:
   node: true
   mocha: true

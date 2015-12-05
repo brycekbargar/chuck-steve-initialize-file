@@ -8,23 +8,23 @@ var proxyquireStubs = { };
 
 var _ = '';
 
-describe('For the Steve Initialize File', function() {
-  beforeEach('Setup Spies', function() {
+describe('For the Steve Initialize File', () => {
+  beforeEach('Setup Spies', () => {
     this.callbackSpy = spy();
     this.readFileStub = stub();
     proxyquireStubs['fs'] = { readFile: this.readFileStub };
   });
-  beforeEach('Setup File', function() {
+  beforeEach('Setup File', () => {
     this.file = proxyquire('./../index.js', proxyquireStubs);
   });
-  describe('when loading the file', function() {
-    it('expect the file name to be passed', function() {
+  describe('when loading the file', () => {
+    it('expect the file name to be passed', () => {
       var filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
       this.file(filePath, this.callbackSpy);
       expect(this.readFileStub).to.have.been.calledOnce;
       expect(this.readFileStub).to.have.been.calledWith(filePath);
     });
-    it('and it fails expect an error', function() {
+    it('and it fails expect an error', () => {
       var error = new Error();
       this.readFileStub.callsArgWith(1, error);
 
@@ -32,47 +32,47 @@ describe('For the Steve Initialize File', function() {
       expect(this.callbackSpy).to.have.been.calledOnce;
       expect(this.callbackSpy).to.have.been.calledWith(error);
     });
-    describe('and it suceeds', function() {
-      beforeEach('Setup Assertion', function() {
+    describe('and it suceeds', () => {
+      beforeEach('Setup Assertion', () => {
         var callbackSpy = this.callbackSpy;
-        this.results = function() {
+        this.results = () => {
           return callbackSpy.getCall(0).args[1];
         };
       });
-      beforeEach('Setup Spies', function() {
+      beforeEach('Setup Spies', () => {
         var readFileStub = this.readFileStub;
-        this.setFileContents = function(contents) {
+        this.setFileContents = (contents) => {
           readFileStub.callsArgWith(1, null, contents);
         };
       });
-      it('expect there to be no error assuming the file isn\'t terrible', function() {
+      it('expect there to be no error assuming the file isn\'t terrible', () => {
         this.readFileStub.callsArgWith(1, null, '');
         this.file(_, this.callbackSpy);
         expect(this.callbackSpy).to.have.been.calledWith(null);
       });
-      describe('expect it to return the correct values for', function() {
-        it('a null file', function() {
+      describe('expect it to return the correct values for', () => {
+        it('a null file', () => {
           this.setFileContents(null);
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([]);
         });
-        it('an empty file', function() {
+        it('an empty file', () => {
           this.setFileContents('');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([]);
         });
-        it('an file with only whitespace', function() {
+        it('an file with only whitespace', () => {
           this.setFileContents('  \n\n  ');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([]);
         });
-        it('a file with one entry', function() {
+        it('a file with one entry', () => {
           var chuckFilePath = 'aSuperCoolChucKFile.ck';
           this.setFileContents('Machine.add(me.dir()+"' + chuckFilePath + '");');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([chuckFilePath]);
         });
-        it('a file with various formats', function() {
+        it('a file with various formats', () => {
           var chuckFilePaths = [
             '0aSuperCoolChucKFile.ck',
             '1aSuperCoolChucKFile.ck',
@@ -100,7 +100,7 @@ describe('For the Steve Initialize File', function() {
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
-        it('a file with single line comments and whitespace', function() {
+        it('a file with single line comments and whitespace', () => {
           var chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
@@ -124,7 +124,7 @@ describe('For the Steve Initialize File', function() {
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
-        it('a file with multi-line comments and whitespace', function() {
+        it('a file with multi-line comments and whitespace', () => {
           var chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
