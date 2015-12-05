@@ -1,15 +1,15 @@
 module.exports = function(filePath, cb){
-  require('fs').readFile(filePath, function(err, contents) {
+  require('fs').readFile(filePath, (err, contents) => {
     if(err) {
       cb(err);
       return;
-    };
+    }
 
     // I tried using a lexer + parser but apparantly I'm not smart enough...
     var filePaths = [];
     (contents || '')
       .split('\n')
-      .forEach(function(thisLine) {
+      .forEach((thisLine) => {
         if(thisLine === '') {
           return;
         }

@@ -34,8 +34,8 @@ describe('For the Steve Initialize File', function() {
     });
     describe('and it suceeds', function() {
       beforeEach('Setup Assertion', function() {
-        callbackSpy = this.callbackSpy
-        this.results = function(result) {
+        var callbackSpy = this.callbackSpy;
+        this.results = function() {
           return callbackSpy.getCall(0).args[1];
         };
       });
@@ -67,23 +67,23 @@ describe('For the Steve Initialize File', function() {
           expect(this.results()).to.eql([]);
         });
         it('a file with one entry', function() {
-          var chuckFilePath = "aSuperCoolChucKFile.ck"
+          var chuckFilePath = 'aSuperCoolChucKFile.ck';
           this.setFileContents('Machine.add(me.dir()+"' + chuckFilePath + '");');
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql([chuckFilePath]);
         });
         it('a file with various formats', function() {
           var chuckFilePaths = [
-            "0aSuperCoolChucKFile.ck",
-            "1aSuperCoolChucKFile.ck",
-            "2aSuperCoolChucKFile.ck",
-            "3aSuperCoolChucKFile.ck",
-            "4aSuperCoolChucKFile.ck",
-            "5aSuperCoolChucKFile.ck",
-            "6aSuperCoolChucKFile.ck",
-            "7aSuperCoolChucKFile.ck",
-            "8aSuperCoolChucKFile.ck",
-            "9aSuperCoolChucKFile.ck",
+            '0aSuperCoolChucKFile.ck',
+            '1aSuperCoolChucKFile.ck',
+            '2aSuperCoolChucKFile.ck',
+            '3aSuperCoolChucKFile.ck',
+            '4aSuperCoolChucKFile.ck',
+            '5aSuperCoolChucKFile.ck',
+            '6aSuperCoolChucKFile.ck',
+            '7aSuperCoolChucKFile.ck',
+            '8aSuperCoolChucKFile.ck',
+            '9aSuperCoolChucKFile.ck'
           ];
           this.setFileContents([
             'Machine.add(me.dir()+"' + chuckFilePaths[0] + '");',
@@ -95,16 +95,16 @@ describe('For the Steve Initialize File', function() {
             'Machine.add(me.dir()   +   "' + chuckFilePaths[6] + '" );',
             'Machine.add(me.dir()+   "' + chuckFilePaths[7] + '" );',
             'Machine.add(me.dir()   +"' + chuckFilePaths[8] + '" );',
-            'Machine.add("' + chuckFilePaths[9] + '" );',
+            'Machine.add("' + chuckFilePaths[9] + '" );'
           ].join('\n'));
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
         it('a file with single line comments and whitespace', function() {
           var chuckFilePaths = [
-            "aCoolFile.ck",
-            "anotherCoolFile.ck",
-            "theLastCoolFile.ck",
+            'aCoolFile.ck',
+            'anotherCoolFile.ck',
+            'theLastCoolFile.ck'
           ];
           this.setFileContents([
             '// I\'m irrelevent!',
@@ -126,9 +126,9 @@ describe('For the Steve Initialize File', function() {
         });
         it('a file with multi-line comments and whitespace', function() {
           var chuckFilePaths = [
-            "aCoolFile.ck",
-            "anotherCoolFile.ck",
-            "theLastCoolFile.ck",
+            'aCoolFile.ck',
+            'anotherCoolFile.ck',
+            'theLastCoolFile.ck'
           ];
           this.setFileContents([
             '/* I\'m irrelevent!',
