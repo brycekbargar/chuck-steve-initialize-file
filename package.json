@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/brycekbargar/chuck-steve-initialize-file.git"
+    "url": "git+https://github.com/brycekbargar/steve-initialize-file.git"
   },
   "author": "Bryce",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/brycekbargar/chuck-steve-initialize-file/issues"
+    "url": "https://github.com/brycekbargar/steve/issues"
   },
-  "homepage": "https://github.com/brycekbargar/chuck-steve-initialize-file#readme",
+  "homepage": "https://github.com/brycekbargar/steve-initialize-file#readme",
   "devDependencies": {
     "chai": "^3.4.1",
     "eslint": "^1.10.2",
