@@ -22,6 +22,8 @@ ecmaFeatures:
     - 2
   templateStrings:
     - 2
+  classes:
+    - 2
 env:
   node: true
   mocha: true

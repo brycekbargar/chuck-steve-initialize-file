@@ -133,23 +133,34 @@ Machine.add(me.dir()+ "${chuckFilePaths[4]}");
           let chuckFilePaths = [
             'aCoolFile.ck',
             'anotherCoolFile.ck',
+            'oneMoreCoolFile.ck',
+            'yetAnotherCoolFile.ck',
             'theLastCoolFile.ck'
           ];
-          this.setFileContents([`
+          this.setFileContents(`
 /* I\'m irrelevent!
+ *
+ * Machine.add(me.dir() + "${chuckFilePaths[2]}");
  *
  * I\'m also irrelevent!*/
 Machine.add(me.dir()+"${chuckFilePaths[0]}");
-Machine.add(me.dir() + "${chuckFilePaths[1]}");
+Machine.add(me.dir()/* really?*/ + /* wtf... */"${chuckFilePaths[1]}" /* ... */);
 
 
-/*
+/* Machine.add(me.dir()+ "${chuckFilePaths[2]}");
 I\'m probably lying!
 I\'m definitely lying!!!
+Machine.add(me.dir()+ "${chuckFilePaths[2]}");*/
+
+/* Machine.add(me.dir()+ "${chuckFilePaths[2]}");
+*/ /* Something important */ Machine.add(me.dir()+ "${chuckFilePaths[2]}"); /* and something else
+Who programs like this?
 */
-Machine.add(me.dir()+ "${chuckFilePaths[2]}");
-/*Why am I not a single line comment */`
-          ].join('\n'));
+
+Machine.add(me.dir()+ "${chuckFilePaths[3]}"); /* Machine.add(me.dir()+ "${chuckFilePaths[0]}"); */
+/*Why am I not a single line comment */
+/* Now */ /* this is getting */Machine.add(me.dir()+ "${chuckFilePaths[4]}"); /* silly */`
+          );
           this.file(_, this.callbackSpy);
           expect(this.results()).to.eql(chuckFilePaths);
         });
