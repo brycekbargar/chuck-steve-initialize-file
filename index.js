@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const fsp = Promise.promisifyAll(require('fs'));
+const path = require('path');
 
 class MultiLineContext {
   constructor(line, inBlock) {
@@ -39,9 +40,11 @@ const stripMultiLineComments = (ctx) => {
 class InitializeFile {
   constructor(filePath) {
     this.filePath = filePath;
+    this.fileDir = path.dirname(filePath);
   }
 
   getFilePaths() {
+    let fileDir = this.fileDir;
     return fsp
       .readFileAsync(this.filePath, 'utf-8')
       .then((contents) => {
@@ -73,7 +76,7 @@ class InitializeFile {
 
             let filePathMatch = thisLine.match(/"(.*?\.ck)"/);
             if(filePathMatch) {
-              filePaths.push(filePathMatch[1]);
+              filePaths.push(path.join(fileDir, filePathMatch[1]));
             }
           });
         return filePaths;

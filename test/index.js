@@ -14,7 +14,7 @@ const proxyquireStubs = {
   fs: 'fs'
 };
 
-const _ = 'A SUPER COOL FILE ABOUT MUSIC THINGS';
+const _ = 'initialize.ck';
 
 describe('For the Steve Initialize File', () => {
   beforeEach('Setup Spies', () => {
@@ -45,6 +45,13 @@ describe('For the Steve Initialize File', () => {
       expect(getFilePaths).to.be.rejected;
     });
     describe('and it succeeds', () => {
+      it('expect the full file path to be returned', () => {
+        let InitializeFile = proxyquire('./../index.js', proxyquireStubs);
+        let initializeFile = new InitializeFile('some/path/initializeFile.ck');
+        this.readFileStub.resolves('Machine.add(me.dir()+"aCoolFile.ck");');
+        let getFilePaths = initializeFile.getFilePaths();
+        expect(getFilePaths).to.eventually.eql(['some/path/aCoolFile.ck']);
+      });
       describe('expect an error if there are non `Machine.add()` statements', () => {
         it('on their own line', () => {
           this.readFileStub.resolves(`
