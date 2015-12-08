@@ -2,30 +2,24 @@
 A wrapper for performing actions on the `Initialize.ck` file specified by  [`steve`](https://www.github.com/brycekbargar/steve).
 
 ### Usage ###
-Right now the package is a single function that has two parameters
+Requiring this package returns an `InitializeFile` class. The class has the following methods:
 
-1. The absolute path the file
-1. A callback for when the function is loaded.
+##### `.constructor()` #####
+Takes a single string containing the absolute path to the `initialize.ck` file
 
-The callback should take two parameters
+##### `.getFilePaths()` #####
+Returns a `Promise` that resolves to a list of file paths added to the ChucK vm
 
-1. Any `Error` that ocurred while loading the file. This will be null if there are no errors.
-1. An `Array` of absolute file paths as strings pointing to the ChucK files listed in the `Initialize.ck` file
-
-
+### Example ###
 ```
-var initializeFile = require('chuck-steve-initialize-file'):
+const InitializeFile = require('chuck-steve-initialize-file'):
 
-var onLoad = function(err, filePathList) {
-  if(err) {
-    console.error(err):
-    return;
-  }
+let initializeFile = new InitializeFile('some path to initialize.ck');
 
-  filePathList.forEach(console.log);
-}
-
-initializeFile('./Initialize.ck', onLoad);
+initializeFile
+  .getFilePaths()
+  .then(fp => fp.forEach(console.log))
+  .catch(console.error);
 ```
 
 ### Possible Errors ###
