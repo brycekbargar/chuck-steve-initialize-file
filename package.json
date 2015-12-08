@@ -1,6 +1,6 @@
 {
   "name": "chuck-steve-initialize-file",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "A wrapper for performing actions on the Initialize.ck file specified by [steve](https://www.github.com/brycekbargar/steve).",
   "main": "index.js",
   "scripts": {
