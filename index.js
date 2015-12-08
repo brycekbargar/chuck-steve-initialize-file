@@ -1,4 +1,8 @@
 'use strict';
+
+const Promise = require('bluebird');
+const fsp = Promise.promisifyAll(require('fs'));
+
 class MultiLineContext {
   constructor(line, inBlock) {
     this.line = line;
@@ -32,45 +36,49 @@ const stripMultiLineComments = (ctx) => {
   return ctx;
 };
 
-module.exports = function(filePath, cb){
-  require('fs').readFile(filePath, 'utf-8', (err, contents) => {
-    if(err) {
-      cb(err);
-      return;
-    }
+class InitializeFile {
+  constructor(filePath) {
+    this.filePath = filePath;
+  }
 
-    // I tried using a lexer + parser but apparantly I'm not smart enough...
-    let filePaths = [];
-    let inBlock = false;
-    (contents || '')
-      .split(/\n|;/)
-      .forEach((thisLine) => {
-        let singleLineCommentIndex = thisLine.indexOf('//');
-        if(singleLineCommentIndex !== -1) {
-          thisLine = thisLine.substring(0, singleLineCommentIndex);
-        }
+  getFilePaths() {
+    return fsp
+      .readFileAsync(this.filePath, 'utf-8')
+      .then((contents) => {
+        // I tried using a lexer + parser but apparantly I'm not smart enough...
+        let filePaths = [];
+        let inBlock = false;
+        (contents || '')
+          .split(/\n|;/)
+          .forEach((thisLine) => {
+            let singleLineCommentIndex = thisLine.indexOf('//');
+            if(singleLineCommentIndex !== -1) {
+              thisLine = thisLine.substring(0, singleLineCommentIndex);
+            }
 
-        let ctx = stripMultiLineComments(new MultiLineContext(
-          thisLine,
-          inBlock
-        ));
-        thisLine = ctx.line.trim();
-        inBlock = ctx.inBlock;
+            let ctx = stripMultiLineComments(new MultiLineContext(
+              thisLine,
+              inBlock
+            ));
+            thisLine = ctx.line.trim();
+            inBlock = ctx.inBlock;
 
-        if(thisLine === '') {
-          return;
-        }
+            if(thisLine === '') {
+              return;
+            }
 
-        if(!thisLine.startsWith('Machine.add(')) {
-          cb(new Error('Only Machine.add() and comments are valid in Initialize.ck files!'));
-        }
+            if(!thisLine.startsWith('Machine.add')) {
+              throw new Error('Only Machine.add() and comments are valid in Initialize.ck files!');
+            }
 
-        let filePathMatch = thisLine.match(/"(.*?\.ck)"/);
-        if(filePathMatch) {
-          filePaths.push(filePathMatch[1]);
-        }
+            let filePathMatch = thisLine.match(/"(.*?\.ck)"/);
+            if(filePathMatch) {
+              filePaths.push(filePathMatch[1]);
+            }
+          });
+        return filePaths;
       });
+  }
+}
 
-    cb(null, filePaths);
-  });
-};
+module.exports = InitializeFile;

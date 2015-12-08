@@ -1,108 +1,99 @@
 'use strict';
 const proxyquire = require('proxyquire').noCallThru();
+const Promise = require('bluebird');
 const sinon = require('sinon');
-const spy = sinon.spy;
+require('sinon-as-promised')(Promise);
 const stub = sinon.stub;
-const expect = require('chai').use(require('sinon-chai')).expect;
+const expect = require('chai')
+  .use(require('sinon-chai'))
+  .use(require('chai-as-promised'))
+  .expect;
 
-const proxyquireStubs = { };
+const proxyquireStubs = {
+  bluebird: Promise,
+  fs: 'fs'
+};
 
-const _ = '';
+const _ = 'A SUPER COOL FILE ABOUT MUSIC THINGS';
 
 describe('For the Steve Initialize File', () => {
   beforeEach('Setup Spies', () => {
-    this.callbackSpy = spy();
-    this.readFileStub = stub();
-    proxyquireStubs['fs'] = { readFile: this.readFileStub };
+    stub(Promise, 'promisifyAll')
+      .withArgs('fs')
+      .returns({
+        readFileAsync: this.readFileStub = stub()
+      });
+  });
+  afterEach('Teardown Spies', () => {
+    Promise.promisifyAll.restore();
   });
   beforeEach('Setup File', () => {
-    this.file = proxyquire('./../index.js', proxyquireStubs);
+    let InitializeFile = proxyquire('./../index.js', proxyquireStubs);
+    this.initializeFile = new InitializeFile(_);
   });
-  describe('when loading the file', () => {
+  describe('when #getFilePaths() is called', () => {
     it('expect the file name and encoding to be passed', () => {
-      let filePath = 'THE BEST FILE EVER! PROBABLY ABOUT BANANA PANCAKES!!!';
-      this.file(filePath, this.callbackSpy);
-      expect(this.readFileStub).to.have.been.calledOnce;
-      expect(this.readFileStub).to.have.been.calledWith(filePath, 'utf-8');
+      this.readFileStub.resolves();
+      let getFilePaths = this.initializeFile.getFilePaths();
+      expect(getFilePaths).to.be.fulfilled;
+      expect(this.readFileStub).to.have.been.calledWith(_, 'utf-8');
     });
-    it('and it fails expect an error', () => {
+    it('expect an error if it fails', () => {
       let error = new Error();
-      this.readFileStub.callsArgWith(2, error);
-
-      this.file(_, this.callbackSpy);
-      expect(this.callbackSpy).to.have.been.calledOnce;
-      expect(this.callbackSpy).to.have.been.calledWith(error);
+      this.readFileStub.rejects(error);
+      let getFilePaths = this.initializeFile.getFilePaths();
+      expect(getFilePaths).to.be.rejected;
     });
     describe('and it succeeds', () => {
-      beforeEach('Setup Assertion', () => {
-        let callbackSpy = this.callbackSpy;
-        this.results = () => {
-          return callbackSpy.getCall(0).args[1];
-        };
-        this.error = () => {
-          return callbackSpy.getCall(0).args[0];
-        };
-      });
-      beforeEach('Setup Spies', () => {
-        let readFileStub = this.readFileStub;
-        this.setFileContents = (contents) => {
-          readFileStub.callsArgWith(2, null, contents);
-        };
-      });
-      it('expect there to be no error assuming the file isn\'t terrible', () => {
-        this.setFileContents('');
-        this.file(_, this.callbackSpy);
-        expect(this.callbackSpy).to.have.been.calledWith(null);
-      });
       describe('expect an error if there are non `Machine.add()` statements', () => {
         it('on their own line', () => {
-          this.setFileContents(`
+          this.readFileStub.resolves(`
 Machine.add(me.dir()+"aCoolFile.ck");
 0 ::second => now;
 Machine.add(me.dir()+"aCoolFile.ck");`
           );
-          this.file(_, this.callbackSpy);
-          expect(this.error()).to.not.be.null;
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.be.rejected;
         });
         it('on the same line', () => {
-          this.setFileContents(`
+          this.readFileStub.resolves(`
 Machine.add(me.dir()+"aCoolFile.ck"); 0 ::second => now;
 Machine.add(me.dir()+"aCoolFile.ck");`
           );
-          this.file(_, this.callbackSpy);
-          expect(this.error()).to.not.be.null;
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.be.rejected;
         });
       });
       describe('expect correct values for', () => {
         it('a null file', () => {
-          this.setFileContents(null);
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql([]);
+          this.readFileStub.resolves(null);
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql([]);
         });
         it('an empty file', () => {
-          this.setFileContents('');
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql([]);
+          this.readFileStub.resolves('');
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql([]);
         });
         it('an file with only whitespace', () => {
-          this.setFileContents('  \n\n  ');
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql([]);
+          this.readFileStub.resolves('  \n\n  ');
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql([]);
         });
         it('a file with one entry', () => {
           let chuckFilePaths = ['aSuperCoolChucKFile.ck'];
-          this.setFileContents(`Machine.add(me.dir()+"${chuckFilePaths[0]}");`);
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql(chuckFilePaths);
+          this.readFileStub.resolves(`Machine.add(me.dir()+"${chuckFilePaths[0]}");`);
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql(chuckFilePaths);
         });
         it('a file with multiple matches on one line', () => {
           let chuckFilePaths = [
             'aSuperCoolChucKFile.ck',
             'theSecondChucKFile.ck'
           ];
-          this.setFileContents(`Machine.add(me.dir()+"${chuckFilePaths[0]}"); Machine.add(me.dir()+"${chuckFilePaths[1]}"); `);
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql(chuckFilePaths);
+          this.readFileStub.resolves(`Machine.add(me.dir()+"${chuckFilePaths[0]}"); Machine.add(me.dir()+"${chuckFilePaths[1]}"); `);
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql(chuckFilePaths);
         });
         it('a file with various formats', () => {
           let chuckFilePaths = [
@@ -117,7 +108,7 @@ Machine.add(me.dir()+"aCoolFile.ck");`
             '8aSuperCoolChucKFile.ck',
             '9aSuperCoolChucKFile.ck'
           ];
-          this.setFileContents(`
+          this.readFileStub.resolves(`
 Machine.add(me.dir()+"${chuckFilePaths[0]}");
 Machine.add(me.dir() + "${chuckFilePaths[1]}");
 Machine.add(me.dir()+ "${chuckFilePaths[2]}");
@@ -129,8 +120,8 @@ Machine.add(me.dir()+   "${chuckFilePaths[7]}" );
 Machine.add(me.dir()   +"${chuckFilePaths[8]}" );
 Machine.add("${chuckFilePaths[9]}" );`
           );
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql(chuckFilePaths);
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql(chuckFilePaths);
         });
         it('a file with single line comments', () => {
           let chuckFilePaths = [
@@ -140,7 +131,7 @@ Machine.add("${chuckFilePaths[9]}" );`
             'yetAnotherCoolFile.ck',
             'theLastCoolFile.ck'
           ];
-          this.setFileContents(`
+          this.readFileStub.resolves(`
 // I\'m irrelevent!',
 Machine.add(me.dir()+"${chuckFilePaths[0]}");
 // Machine.add(me.dir() + "${chuckFilePaths[0]}");
@@ -157,8 +148,8 @@ Machine.add(me.dir() + "${chuckFilePaths[3]}"); // Machine.add(me.dir() + "${chu
 Machine.add(me.dir()+ "${chuckFilePaths[4]}");
 //Why would you comment the last line in a file?`
           );
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql(chuckFilePaths);
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql(chuckFilePaths);
         });
         it('a file with multi-line comments', () => {
           let chuckFilePaths = [
@@ -168,7 +159,7 @@ Machine.add(me.dir()+ "${chuckFilePaths[4]}");
             'yetAnotherCoolFile.ck',
             'theLastCoolFile.ck'
           ];
-          this.setFileContents(`
+          this.readFileStub.resolves(`
 /* I\'m irrelevent!
  *
  * Machine.add(me.dir() + "${chuckFilePaths[2]}");
@@ -192,8 +183,8 @@ Machine.add(me.dir()+ "${chuckFilePaths[3]}"); /* Machine.add(me.dir()+ "${chuck
 /*Why am I not a single line comment */
 /* Now */ /* this is getting */Machine.add(me.dir()+ "${chuckFilePaths[4]}"); /* silly */`
           );
-          this.file(_, this.callbackSpy);
-          expect(this.results()).to.eql(chuckFilePaths);
+          let getFilePaths = this.initializeFile.getFilePaths();
+          expect(getFilePaths).to.eventually.eql(chuckFilePaths);
         });
       });
     });
