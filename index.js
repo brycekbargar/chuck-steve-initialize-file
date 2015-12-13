@@ -41,14 +41,11 @@ class InitializeFile {
   constructor(filePath) {
     this.filePath = filePath;
     this.fileDir = path.dirname(filePath);
-  }
 
-  getFilePaths() {
-    let fileDir = this.fileDir;
-    return fsp
+    this.getFilePaths = () => fsp
       .readFileAsync(this.filePath, 'utf-8')
       .then((contents) => {
-        // I tried using a lexer + parser but apparantly I'm not smart enough...
+      // I tried using a lexer + parser but apparantly I'm not smart enough...
         let filePaths = [];
         let inBlock = false;
         (contents || '')
@@ -76,7 +73,7 @@ class InitializeFile {
 
             let filePathMatch = thisLine.match(/"(.*?\.ck)"/);
             if(filePathMatch) {
-              filePaths.push(path.join(fileDir, filePathMatch[1]));
+              filePaths.push(path.join(this.fileDir, filePathMatch[1]));
             }
           });
         return filePaths;
